@@ -12,7 +12,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
 {
     public static class SnapAimEvaluator
     {
-        private const double wide_angle_multiplier = 3.0;
+        private const double wide_angle_multiplier = 50.0;
         private const double acute_angle_multiplier = 2.41;
         private const double slider_multiplier = 1.5;
         private const double velocity_change_multiplier = 0.9;
@@ -71,9 +71,9 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                 // Rewarding angles, take the smaller velocity as base.
                 double angleBonus = Math.Min(currVelocity, prevVelocity);
 
-                // Rewarding wide angles, scaled at d/t^2 since they become exponentially more difficult with increased speeds.
-                double currScaling = osuCurrObj.LazyJumpDistance / Math.Pow(osuCurrObj.AdjustedDeltaTime, 1.2121212121212);
-                double prevScaling = osuLastObj.LazyJumpDistance / Math.Pow(osuLastObj.AdjustedDeltaTime, 1.2121212121212);
+                // Rewarding wide angles, scaled at d/t^3 since they become exponentially more difficult with increased speeds.
+                double currScaling = osuCurrObj.LazyJumpDistance / Math.Pow(osuCurrObj.AdjustedDeltaTime, 1.8181818181818);
+                double prevScaling = osuLastObj.LazyJumpDistance / Math.Pow(osuLastObj.AdjustedDeltaTime, 1.8181818181818);
                 double wideAngleBase = Math.Min(currScaling, prevScaling);
 
                 if (Math.Max(osuCurrObj.AdjustedDeltaTime, osuLastObj.AdjustedDeltaTime) < 1.25 * Math.Min(osuCurrObj.AdjustedDeltaTime, osuLastObj.AdjustedDeltaTime)) // If rhythms are the same.
