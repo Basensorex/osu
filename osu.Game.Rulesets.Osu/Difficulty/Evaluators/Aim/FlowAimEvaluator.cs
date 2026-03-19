@@ -70,7 +70,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                 double angularVelocity = angleDifferenceAdjusted / (osuCurrObj.AdjustedDeltaTime * 0.1);
 
                 // Low angular velocity flow (angles are consistent) is easier to follow than erratic flow
-                flowDifficulty *= 0.8 + Math.Sqrt(angularVelocity / 270.0);
+                flowDifficulty *= 0.9 + Math.Sqrt(angularVelocity / 270.0);
             }
 
             double o1 = calculateOverlapFactor(osuNextObj, osuCurrObj);
