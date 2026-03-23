@@ -89,7 +89,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                                   overlappedNotesWeight;
             }
 
-            if (Math.Max(nextVelocity, currVelocity) != 0)
+            if (Math.Max(nextVelocity, currVelocity) != 0 && Math.Max(osuCurrObj.AdjustedDeltaTime, osuNextObj.AdjustedDeltaTime) < 1.25 * Math.Min(osuCurrObj.AdjustedDeltaTime, osuNextObj.AdjustedDeltaTime))
             {
                 if (withSliderTravelDistance)
                 {
