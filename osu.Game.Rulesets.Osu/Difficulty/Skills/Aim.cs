@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Skills
 
         private double skillMultiplierSnap => 71.0;
         private double skillMultiplierAgility => 2.35;
-        private double skillMultiplierFlow => 255.0;
+        private double skillMultiplierFlow => 253.0;
         private double skillMultiplierTotal => 1.11;
         private double meanExponent => 1.2;
 
@@ -98,7 +98,6 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Skills
             double pSnap = calculateSnapFlowProbability(flowDifficulty / combinedSnapDifficulty);
             double pFlow = 1 - pSnap;
             previousPFlow = pFlow;
-
 
             double totalDifficulty = combinedSnapDifficulty * pSnap + flowDifficulty * pFlow;
 

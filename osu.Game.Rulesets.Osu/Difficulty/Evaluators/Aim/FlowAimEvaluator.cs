@@ -80,8 +80,8 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                 // Acute angles are also hard to flow
                 // We square root velocity to make acute angle switches in streams aren't having difficulty higher than snap
                 flowContinuationDifficulty += Math.Sqrt(currVelocity) *
-                                  SnapAimEvaluator.CalcAcuteAngleBonus(osuCurrObj.Angle.Value) *
-                                  overlappedNotesWeight;
+                                              SnapAimEvaluator.CalcAcuteAngleBonus(osuCurrObj.Angle.Value) *
+                                              overlappedNotesWeight;
             }
 
             if (Math.Max(prevVelocity, currVelocity) != 0)
@@ -99,9 +99,9 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                     Math.Abs(prevVelocity - currVelocity));
 
                 flowContinuationDifficulty += overlapVelocityBuff *
-                                  distRatio *
-                                  overlappedNotesWeight *
-                                  velocity_change_multiplier;
+                                              distRatio *
+                                              overlappedNotesWeight *
+                                              velocity_change_multiplier;
             }
 
             if (osuCurrObj.BaseObject is Slider && withSliderTravelDistance)
@@ -116,7 +116,6 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
             flowContinuationDifficulty *= previousPFlow;
 
             double flowDifficulty = flowTransitionDifficulty + flowContinuationDifficulty;
-
 
             // Final velocity is being raised to a power because flow difficulty scales harder with both high distance and time, and we want to account for that
             return Math.Pow(flowDifficulty, 1.45);
