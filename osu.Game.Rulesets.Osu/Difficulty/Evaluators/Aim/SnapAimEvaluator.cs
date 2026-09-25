@@ -168,7 +168,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
             return snapDifficulty;
         }
 
-        private static double highBpmBonus(double ms) => 1 / (1 - DiffUtils.Pow(0.03, DiffUtils.Pow(ms / 1000, 0.65)));
+        private static double highBpmBonus(double ms) => 1 / (1 - DiffUtils.Pow(0.03, DiffUtils.Pow(ms / 1000, 0)));
 
         private static double vectorAngleRepetition(OsuDifficultyHitObject current, OsuDifficultyHitObject previous)
         {
