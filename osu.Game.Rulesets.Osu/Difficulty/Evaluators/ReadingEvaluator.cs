@@ -44,7 +44,11 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators
 
             double rhythmReading = calculateRhythmReading(currObj);
 
-            double readingDifficulty = DiffUtils.Norm(1.5, preemptDifficulty, hiddenDifficulty, noteDensityDifficulty, rhythmReading);
+            // so basically i wanna buff rhythm reading when preempt is high
+            double preemptMultiplier = 1.0 + (preemptDifficulty * 0.0075);
+            double buffedRhythmReading = rhythmReading * preemptMultiplier;
+
+            double readingDifficulty = DiffUtils.Norm(1.5, preemptDifficulty, hiddenDifficulty, noteDensityDifficulty, buffedRhythmReading);
 
             return readingDifficulty;
         }
