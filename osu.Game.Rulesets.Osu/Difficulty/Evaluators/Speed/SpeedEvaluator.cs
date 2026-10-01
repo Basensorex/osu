@@ -4,6 +4,7 @@
 using System;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Utils;
+using osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim; // Added to access SnapAimEvaluator
 using osu.Game.Rulesets.Osu.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Osu.Objects;
 
@@ -26,6 +27,12 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Speed
             const double min_speed_bonus = 200; // 200 BPM 1/4th
             const double speed_balancing_factor = 40;
 
+            // alternation bpms speed bonus balancing
+            const double alt_aim_peak_bonus = 0.75; // controls how high the bonus is at its peak (0.75 = 1.75x maximum multiplier).
+            const double alt_aim_target_bpm = 300.0; // the exact bpm where the peak bonus is applied.
+            const double alt_aim_bpm_width = 10.0; // controls the width of the affected bpm range (acts as standard deviation).
+            const double alt_aim_taper_shape = 3.0; // controls how fast it tapers off. 2.0 is a standard bell curve. higher values create a flatter peak with steeper drop-offs.
+
             var osuCurrObj = (OsuDifficultyHitObject)current;
 
             double strainTime = osuCurrObj.AdjustedDeltaTime;
@@ -46,6 +53,21 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Speed
             double speedDifficulty = (1 + speedBonus) * 1000 / strainTime;
 
             speedDifficulty *= highBpmBonus(osuCurrObj.AdjustedDeltaTime);
+
+            // bonus for speed at uncomfortable alternation bpms
+            double snapAim = SnapAimEvaluator.EvaluateDifficultyOf(current, true);
+
+            if (snapAim > 0)
+            {
+                double effectiveBpm = DiffUtils.MillisecondsToBPM(osuCurrObj.AdjustedDeltaTime, 2);
+
+                // the machine told me i need this
+                double baseCalculation = Math.Abs(effectiveBpm - alt_aim_target_bpm) / alt_aim_bpm_width;
+
+                double alternatingBonus = alt_aim_peak_bonus * Math.Exp(-0.5 * Math.Pow(baseCalculation, alt_aim_taper_shape));
+
+                speedDifficulty *= (1 + alternatingBonus);
+            }
 
             // Apply penalty if there's doubletappable doubles
             return speedDifficulty * doubleTapFeasibility;
