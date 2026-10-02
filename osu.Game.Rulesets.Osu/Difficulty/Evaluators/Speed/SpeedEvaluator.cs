@@ -4,7 +4,7 @@
 using System;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Utils;
-using osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim; // Added to access SnapAimEvaluator
+using osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim; // we need these
 using osu.Game.Rulesets.Osu.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Osu.Objects;
 
@@ -56,14 +56,13 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Speed
 
             // bonus for speed at uncomfortable alternation bpms
             double snapAim = SnapAimEvaluator.EvaluateDifficultyOf(current, true);
+            double flowAim = FlowAimEvaluator.EvaluateDifficultyOf(current, true);
 
-            if (snapAim > 0)
+            if (snapAim > 0 && snapAim < flowAim)
             {
                 double effectiveBpm = DiffUtils.MillisecondsToBPM(osuCurrObj.AdjustedDeltaTime, 2);
 
-                // the machine told me i need this
                 double baseCalculation = Math.Abs(effectiveBpm - alt_aim_target_bpm) / alt_aim_bpm_width;
-
                 double alternatingBonus = alt_aim_peak_bonus * Math.Exp(-0.5 * Math.Pow(baseCalculation, alt_aim_taper_shape));
 
                 speedDifficulty *= (1 + alternatingBonus);
