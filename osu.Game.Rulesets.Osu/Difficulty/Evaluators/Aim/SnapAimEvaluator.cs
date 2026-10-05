@@ -59,7 +59,37 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
 
             snapDifficulty *= highBpmBonus(osuCurrObj.AdjustedDeltaTime);
 
+            // Apply verticality nerf
+            snapDifficulty *= calculateVerticalityNerf(osuCurrObj, osuLastObj, currVelocity);
+
             return snapDifficulty;
+        }
+
+        private static double calculateVerticalityNerf(OsuDifficultyHitObject osuCurrObj, OsuDifficultyHitObject osuLastObj, double currVelocity)
+        {
+            const double maximum_vertical_nerf = 0.10; // max 10% nerf for a straight vertical pattern
+            const double velocity_exponent = 2.0; // velocity scaling, eg change to 2.0 to scale the nerf by velocity^2
+
+            var currBaseObject = (OsuHitObject)osuCurrObj.BaseObject;
+            var lastBaseObject = (OsuHitObject)osuLastObj.BaseObject;
+
+            var jumpVector = currBaseObject.StackedPosition - lastBaseObject.StackedPosition;
+            double distance = jumpVector.Length;
+
+            if (distance == 0)
+                return 1.0;
+
+            double verticality = Math.Abs(jumpVector.Y) / distance;
+
+            double smoothVerticality = DiffUtils.Smootherstep(verticality, 0, 1);
+
+            double velocityScaling = DiffUtils.Pow(currVelocity, velocity_exponent);
+
+            double peakNerf = Math.Min(maximum_vertical_nerf, maximum_vertical_nerf * velocityScaling);
+
+            double finalNerf = peakNerf * smoothVerticality;
+
+            return 1.0 - finalNerf;
         }
 
         private static double calculateAcuteAngleBonus(OsuDifficultyHitObject osuCurrObj, OsuDifficultyHitObject osuLastObj,
