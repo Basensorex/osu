@@ -67,21 +67,19 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
 
         private static double calculateVerticalityNerf(OsuDifficultyHitObject osuCurrObj, OsuDifficultyHitObject osuLastObj)
         {
-            // increase to nerf verticals more and vice-versa
-            const double maximum_vertical_nerf = 0.10;
+            const double maximum_vertical_nerf = 0.18;
 
             var currBaseObject = (OsuHitObject)osuCurrObj.BaseObject;
             var lastBaseObject = (OsuHitObject)osuLastObj.BaseObject;
 
             var jumpVector = currBaseObject.StackedPosition - lastBaseObject.StackedPosition;
-            double distance = jumpVector.Length;
 
-            if (distance == 0)
+            if (jumpVector.Length == 0)
                 return 1.0;
 
-            double verticality = Math.Abs(jumpVector.Y) / distance;
+            double angleFromHorizontal = Math.Atan2(Math.Abs(jumpVector.Y), Math.Abs(jumpVector.X));
 
-            double smoothVerticality = DiffUtils.Smootherstep(verticality, 0, 1);
+            double smoothVerticality = DiffUtils.Smootherstep(angleFromHorizontal, double.DegreesToRadians(45), double.DegreesToRadians(90));
 
             double finalNerf = maximum_vertical_nerf * smoothVerticality;
 
