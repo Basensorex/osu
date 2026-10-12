@@ -169,7 +169,7 @@ namespace osu.Game.Rulesets.Osu.Difficulty.Evaluators.Aim
                 return 1;
 
             const double note_limit = 6;
-            const double maximum_repetition_nerf = 0.15;
+            const double maximum_repetition_nerf = 0.20;
             const double maximum_vector_influence = 0.5;
 
             double constantAngleCount = 0;

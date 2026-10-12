@@ -210,8 +210,21 @@ namespace osu.Game.Rulesets.Osu.Difficulty
 
             double aimValue = DifficultyToPerformance(aimDifficulty);
 
+            // length bonus balancing constants
+            const double time_bonus_start = 120.0;
+            const double time_bonus_end = 600.0;
+            const double time_bonus_max_buff = 0.25;
+            const double time_bonus_weight = 0.2; // How much of the max buff to actually apply
+
             double lengthBonus = 0.95 + 0.35 * Math.Min(1.0, totalHits / 2000.0) +
                                  (totalHits > 2000 ? Math.Log10(totalHits / 2000.0) * 0.5 : 0.0);
+
+            double drainTimeSeconds = (score.BeatmapInfo!.Length / 1000.0) / clockRate;
+            double timeBuff = time_bonus_max_buff * DiffUtils.Smoothstep(drainTimeSeconds, time_bonus_start, time_bonus_end);
+
+            // add the weighted time buff directly on top of the original multiplier
+            lengthBonus += timeBuff * time_bonus_weight;
+
             aimValue *= lengthBonus;
 
             if (effectiveMissCount > 0)
